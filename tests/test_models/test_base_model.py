@@ -2,9 +2,7 @@
 # -*- coding: utf-8 -*-
 """Unittest for base model module.
 
-This unittest is a collection of possible edge cases
-on which this module should not be expected to fail,
-and cases on which it is expected to fail.
+Collection of tests for base model
 
 """
 
@@ -16,7 +14,6 @@ from models.amenity import Amenity
 from models.state import State
 from models.review import Review
 import os
-import pep8
 import unittest
 import uuid
 
@@ -31,7 +28,7 @@ class TestBaseModel(unittest.TestCase):
         cls.base.num = 20
 
     @classmethod
-    def teardown(cls):
+    def tearDownClass(cls):
         """at the end of the test this will tear it down"""
         del cls.base
 
@@ -41,20 +38,6 @@ class TestBaseModel(unittest.TestCase):
             os.remove("objects.json")
         except Exception:
             pass
-
-    def test_pep8_conformance_base_model(self):
-        """pep8 test.
-
-        This test is designed to make sure the Python code
-        is up to the pep8 standard.
-
-        """
-        syntax = pep8.StyleGuide(quit=True)
-        check = syntax.check_files(['models/base_model.py'])
-        self.assertEqual(
-            check.total_errors, 0,
-            "Found code style errors (and warnings)."
-        )
 
     def test_base_model_id_is_string(self):
         """UUID format testing.

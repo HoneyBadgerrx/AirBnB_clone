@@ -1,22 +1,32 @@
 #!/usr/bin/env python3
+
 """
 BaseModel that all other classes will inherit from
 """
 
 import uuid
 import datetime
+import models
 
 class BaseModel():
 	"""attributes all other classes will inherit from"""
-	def __init__(self):
+	def __init__(self, *args, **kwargs):
 		"""initializes with the following variables"""
-		self.id = str(uuid.uuid4())
-		self.created_at = datetime.datetime.now()
-		self.updated_at = self.created_at
+		if kwargs:
+			for arg, value in kwargs.items():
+				if arg in ('created_at', 'updated_at'):
+					value = datetime.strptime(val, '%Y-%m-%dT%H:%M:%S.%f')
+					setattr(self, arg, val)
+		else:
+			self.id = str(uuid.uuid4())
+			self.created_at = datetime.datetime.now()
+			self.updated_at = self.created_at
+			models.storage.new(self)
 
 	def save(self):
 		"""updates updated_at variable with current time"""
 		self.updated_at = datetime.datetime.now()
+		models.storage.save()
 
 	def to_dict(self):
 		"""returns dict containing all keys/values of the object"""
@@ -29,7 +39,5 @@ class BaseModel():
 
 	def __str__(self):
 		"""string repr of object"""
-		return ("[{}] ({}) {}".format(self.__class__.__name__, self.id, self.__dict__))
-p = BaseModel()
-print(p.__dict__)
-print(p.to_dict())
+		return ("[{}] ({}) {}".format(self.__class__.__name__,
+ self.id, self.__dict__))
