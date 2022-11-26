@@ -53,58 +53,59 @@ class HBNBCommand(cmd.Cmd):
 		command = self.parseline(line)[0]
 		arg = self.parseline(line)[1]
 
-	if command is None:
-		print('** class name missing **')
-	elif command not in self.allowed_classes:
-		print("** class doesn't exist **")
-	elif arg == '':
-		print('** instance id missing **')
-	else:
-		key = command + '.' + arg
-		inst_data = models.storage.all().get(key)
-		if inst_data is None:
-			print('** no instance found **')
+		if command is None:
+			print('** class name missing **')
+		elif command not in self.allowed_classes:
+			print("** class doesn't exist **")
+		elif arg == '':
+			print('** instance id missing **')
 		else:
-			del models.storage.all()[key]
-			models.storage.save()
+			key = command + '.' + arg
+			inst_data = models.storage.all().get(key)
+			if inst_data is None:
+				print('** no instance found **')
+			else:
+				del models.storage.all()[key]
+				models.storage.save()
 
 	def do_all(self, line):
 		"""Prints all string representation of all instances"""
 		command = self.parseline(line)[0]
-        objs = models.storage.all()
+		objs = models.storage.all()
 
-        if command is None:
-            print([str(objs[obj]) for obj in objs])
-        elif command in self.allowed_classes:
-            keys = objs.keys()
-            print([str(objs[key]) for key in keys if key.startswith(command)])
-        else:
-            print("** class doesn't exist **")
+		if command is None:
+			print([str(objs[obj]) for obj in objs])
+		elif command in self.allowed_classes:
+			keys = objs.keys()
+			print([str(objs[key]) for key in keys if key.startswith(command)])
+		else:
+			print("** class doesn't exist **")
 
-    def do_update(self, line):
-        """Updates an instance"""
-        args = shlex.split(line)
-        args_size = len(args)
-        if args_size == 0:
-            print('** class name missing **')
-        elif args[0] not in self.allowed_classes:
-            print("** class doesn't exist **")
-        elif args_size == 1:
-            print('** instance id missing **')
-        else:
-            key = args[0] + '.' + args[1]
-            inst_data = models.storage.all().get(key)
-            if inst_data is None:
-                print('** no instance found **')
-            elif args_size == 2:
-                print('** attribute name missing **')
-            elif args_size == 3:
-                print('** value missing **')
-            else:
-                args[3] = self.analyze_parameter_value(args[3])
-                setattr(inst_data, args[2], args[3])
-                setattr(inst_data, 'updated_at', datetime.now())
-                models.storage.save()
+	def do_update(self, line):
+		"""Updates an instance"""
+		args = shlex.split(line)
+		args_size = len(args)
+
+		if args_size == 0:
+			print('** class name missing **')
+		elif args[0] not in self.allowed_classes:
+			print("** class doesn't exist **")
+		elif args_size == 1:
+			print('** instance id missing **')
+		else:
+			key = args[0] + '.' + args[1]
+			inst_data = models.storage.all().get(key)
+		if inst_data is None:
+			print('** no instance found **')
+		elif args_size == 2:
+			print('** attribute name missing **')
+		elif args_size == 3:
+			print('** value missing **')
+		else:
+			args[3] = self.analyze_parameter_value(args[3])
+			setattr(inst_data, args[2], args[3])
+			setattr(inst_data, 'updated_at', datetime.now())
+			models.storage.save()
 
 if __name__ == '__main__':
 	HBNBCommand().cmdloop()
