@@ -28,6 +28,7 @@ class FileStorage:
 			j_dict[k] = v.to_dict()
 		with open(self.__file_path, mode='w', encoding='utf-8') as f:
 			json.dump(j_dict, f)
+		print(self.__objects)
 	def reload(self):
 		"""loads stored objects"""
 		if path.exists(self.__file_path):
