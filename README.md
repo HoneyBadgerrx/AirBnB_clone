@@ -1,0 +1,1 @@
+An AirBnB copy webiste. This repository contains the file storage class used to store objects in json files, basemodel which every other class and model shall inherit from and the console to manage  the entire process
