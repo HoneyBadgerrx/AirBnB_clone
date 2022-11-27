@@ -6,6 +6,12 @@ module for storing objects created in a json file
 import json
 from models.base_model import BaseModel
 from os import path
+from models.amenity import Amenity
+from models.city import City
+from models.place import Place
+from models.review import Review
+from models.state import State
+from models.user import User
 
 class FileStorage:
 	"""file storage class"""
@@ -29,6 +35,7 @@ class FileStorage:
 		with open(self.__file_path, mode='w', encoding='utf-8') as f:
 			json.dump(j_dict, f)
 		print(self.__objects)
+
 	def reload(self):
 		"""loads stored objects"""
 		if path.exists(self.__file_path):

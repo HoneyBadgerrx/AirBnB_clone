@@ -6,6 +6,15 @@ module containing console execution
 import cmd
 from models.base_model import BaseModel
 from models import storage
+from datetime import datetime
+from models.user import User
+from models.state import State
+from models.city import City
+from models.place import Place
+from models.amenity import Amenity
+from models.review import Review
+import re
+import shlex
 
 class HBNBCommand(cmd.Cmd):
 	"""the console module"""
@@ -81,6 +90,15 @@ class HBNBCommand(cmd.Cmd):
 		else:
 			print("** class doesn't exist **")
 
+	def get_objects(self, instance=''):
+		"""gets instances of given class or returns all instances"""
+		objects = storage.all()
+
+		if instance:
+			keys = objects.keys()
+			return [str(val) for key, val in objects.items() if key.startswith(instance)]
+		return [str(val) for key, val in objects.items()]
+
 	def do_update(self, line):
 		"""Updates an instance"""
 		args = shlex.split(line)
@@ -107,5 +125,23 @@ class HBNBCommand(cmd.Cmd):
 			setattr(inst_data, 'updated_at', datetime.now())
 			models.storage.save()
 
+	def default(self, line):
+		"""if syntax is not recognized, call this function"""
+		if '.' in line:
+			splitted = re.split(r'\.|\(|\)', line)
+			class_name = splitted[0]
+			method_name = splitted[1]
+
+		if class_name in self.allowed_classes:
+			if method_name == 'all':
+				print(self.get_objects(class_name))
+			elif method_name == 'count':
+				print(len(self.get_objects(class_name)))
+			elif method_name == 'show':
+				class_id = splitted[2][1:-1]
+				self.do_show(class_name + ' ' + class_id)
+			elif method_name == 'destroy':
+				class_id = splitted[2][1:-1]
+				self.do_destroy(class_name + ' ' + class_id)
 if __name__ == '__main__':
 	HBNBCommand().cmdloop()
